@@ -31,7 +31,7 @@ export const Volume: React.FC<VolumeProps> = ({value, bg, rail, onChange}) => {
 
   return (
     <span ref={volumeRef} className={volumeSliderClass}>
-      <RailWrap>
+      <RailWrap railHeight={8}>
         <Rail value={1} color={bg} />
         {!!value && <Rail value={value} color={rail} />}
       </RailWrap>

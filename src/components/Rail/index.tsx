@@ -18,6 +18,7 @@ export const Rail: React.FC<RailProps> = ({color = 'red', value, skip}) => {
   const style: React.CSSProperties = {
     background: color,
     width: `${value * 100}%`,
+    right:0
   };
 
   if (skip) {

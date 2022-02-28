@@ -16,7 +16,7 @@ import formatTime from './formatTime';
 const {useRef, useEffect, useState, useMemo} = React;
 
 const ff = '"Open Sans",Roboto,sans-serif';
-export const defaultHeight = 64;
+export const defaultHeight = 256;
 
 export type PlayerState = HTMLMediaState;
 export type PlayerControls = HTMLMediaControls;
@@ -149,7 +149,7 @@ export const Player: React.FC<PlayerProps> = ({
   src,
   height = defaultHeight,
   grey = [246, 248, 250],
-  accent = [255, 0, 0],
+  accent = [255, 255, 255],
   autoPlay,
   hideVolume,
   controls: controlsRef,
@@ -174,7 +174,7 @@ export const Player: React.FC<PlayerProps> = ({
   const seek = useSlider(seekAreaRef, {
     onScrubStop: (value) => {
       if (!latestState.current.duration) return;
-      latestControls.current.seek(Math.round(latestState.current.duration * value));
+      latestControls.current.seek(Math.round(latestState.current.duration * (value)));
     },
   });
 
@@ -213,7 +213,7 @@ export const Player: React.FC<PlayerProps> = ({
 
   const seekArea = (
     <span ref={seekAreaRef} className={seekAreaClass}>
-      <RailWrap>
+      <RailWrap railHeight={230}>
         <Rail value={1} color={color.contrast(0.08)} />
         {!!state.duration &&
           !!state.buffered &&
@@ -222,17 +222,17 @@ export const Player: React.FC<PlayerProps> = ({
           ))}
         {!!state.duration && (
           <Rail
-            value={(state.time || 0) / state.duration}
+            value={1 - (state.time || 0) / state.duration}
             color={
               state.paused
                 ? color.shade(0.4)
                 : seek.isSliding
-                ? `rgba(${accent[0]},${accent[1]},${accent[2]},.5)`
-                : `rgb(${accent[0]},${accent[1]},${accent[2]})`
+                ? `rgba(${accent[0]},${accent[1]},${accent[2]},.05)`
+                : `rgba(${accent[0]},${accent[1]},${accent[2]},.1)`
             }
           />
         )}
-        {!!seek.isSliding && <Rail value={seek.value} color={`rgba(${accent[0]},${accent[1]},${accent[2]},.6)`} />}
+        {!!seek.isSliding && <Rail value={1 - seek.value} color={`rgba(${accent[0]},${accent[1]},${accent[2]},.6)`} />}
       </RailWrap>
       {!!state.duration && seek.isSliding && (
         <span
@@ -280,15 +280,6 @@ export const Player: React.FC<PlayerProps> = ({
         <span className={timeClass} style={{color: color.contrast(0.85)}}>
           {formatTime(state.time) + ' / ' + formatTime(state.duration)}
         </span>
-      )}
-      {volumeButton}
-      {!hideVolume && (
-        <Volume
-          value={state.volume || 0}
-          onChange={(value) => controls.volume(value)}
-          bg={color.contrast(0.06)}
-          rail={color.contrast(0.12)}
-        />
       )}
     </span>
   );
