@@ -2,7 +2,7 @@ import * as React from 'react';
 import {rule} from 'p4-css';
 import useAudio from 'react-use/lib/useAudio';
 import useSlider from 'react-use/lib/useSlider';
-import {HTMLMediaState, HTMLMediaControls} from 'react-use/lib/util/createHTMLMediaHook';
+import {HTMLMediaState, HTMLMediaControls} from 'react-use/lib/factory/createHTMLMediaHook';
 import IconPlay from '../../icons/Play';
 import IconPause from '../../icons/Pause';
 import IconVolume from '../../icons/Volume';
