@@ -12,6 +12,7 @@ import {RailWrap} from '../RailWrap';
 import {Volume} from '../Volume';
 import createColorManager from './createColorManager';
 import formatTime from './formatTime';
+import {HeatMapGrid} from 'react-grid-heatmap';
 
 const {useRef, useEffect, useState, useMemo} = React;
 
@@ -98,6 +99,8 @@ export interface PlayerProps {
    */
   src: string;
 
+  featureData: number[][];
+
   /**
    * Shade of grey to use as base color for player. 3-tuple of numbers in
    * 0 to 255 range, representing an RGB color.
@@ -147,8 +150,9 @@ export interface PlayerProps {
 
 export const Player: React.FC<PlayerProps> = ({
   src,
+  featureData,
   height = defaultHeight,
-  grey = [246, 248, 250],
+  grey = [255, 255, 255],
   accent = [255, 255, 255],
   autoPlay,
   hideVolume,
@@ -213,26 +217,27 @@ export const Player: React.FC<PlayerProps> = ({
 
   const seekArea = (
     <span ref={seekAreaRef} className={seekAreaClass}>
-      <RailWrap railHeight={230}>
-        <Rail value={1} color={color.contrast(0.08)} />
+      <RailWrap railHeight={height}>
+        <div style={{width:'100%'}}><HeatMapGrid cellHeight={(height/featureData.length).toString() + "px"} data={featureData}/></div>
+        <Rail value={1} color={color.contrast(0)} />
         {!!state.duration &&
           !!state.buffered &&
           state.buffered.map(({start, end}: {start: number; end: number}) => (
-            <Rail value={(end - start) / state.duration} skip={start / state.duration} color={color.contrast(0.08)} />
+            <Rail value={(end - start) / state.duration} skip={start / state.duration} color={color.contrast(0)} />
           ))}
         {!!state.duration && (
           <Rail
             value={1 - (state.time || 0) / state.duration}
             color={
               state.paused
-                ? color.shade(0.4)
+                ? color.contrast(0.5)
                 : seek.isSliding
-                ? `rgba(${accent[0]},${accent[1]},${accent[2]},.05)`
-                : `rgba(${accent[0]},${accent[1]},${accent[2]},.1)`
+                ? color.contrast(0)
+                : color.shade(0.5)
             }
           />
         )}
-        {!!seek.isSliding && <Rail value={1 - seek.value} color={`rgba(${accent[0]},${accent[1]},${accent[2]},.6)`} />}
+        {!!seek.isSliding && <Rail value={1 - seek.value} color={color.shade(0.5)} />}
       </RailWrap>
       {!!state.duration && seek.isSliding && (
         <span
