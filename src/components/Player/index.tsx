@@ -101,6 +101,8 @@ export interface PlayerProps {
 
   featureData: number[][];
 
+  colorData: number[][][];
+
   /**
    * Shade of grey to use as base color for player. 3-tuple of numbers in
    * 0 to 255 range, representing an RGB color.
@@ -151,6 +153,7 @@ export interface PlayerProps {
 export const Player: React.FC<PlayerProps> = ({
   src,
   featureData,
+  colorData,
   height = defaultHeight,
   grey = [255, 255, 255],
   accent = [255, 255, 255],
@@ -218,7 +221,16 @@ export const Player: React.FC<PlayerProps> = ({
   const seekArea = (
     <span ref={seekAreaRef} className={seekAreaClass}>
       <RailWrap railHeight={height}>
-        <div style={{width:'100%'}}><HeatMapGrid cellHeight={(height/featureData.length).toString() + "px"} data={featureData}/></div>
+        <div style={{width:'100%'}}><HeatMapGrid
+            cellHeight={(height/featureData.length).toString() + "px"}
+            data={featureData}
+            cellStyle={(_x, _y, ratio) => {
+              console.log()
+              return {
+                background: `rgb(${colorData[_x][_y][0]*255}, ${colorData[_x][_y][1]*255}, ${colorData[_x][_y][2]*255})`
+              }
+            }}
+        /></div>
         <Rail value={1} color={color.contrast(0)} />
         {!!state.duration &&
           !!state.buffered &&
