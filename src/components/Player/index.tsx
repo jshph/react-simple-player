@@ -225,7 +225,6 @@ export const Player: React.FC<PlayerProps> = ({
             cellHeight={(height/featureData.length).toString() + "px"}
             data={featureData}
             cellStyle={(_x, _y, ratio) => {
-              console.log()
               return {
                 background: `rgb(${colorData[_x][_y][0]*255}, ${colorData[_x][_y][1]*255}, ${colorData[_x][_y][2]*255})`
               }
